@@ -1,12 +1,11 @@
-const express = require('express');
-const { getMovies } = require('./routes/movies');
+import express from 'express';
+import { getMovies } from './routes/movies.js';
 
 const app = express();
 const PORT = 8080;
 
 // Routes
 app.get('/', getMovies);
-
 
 // Listen
 app.listen(PORT, () => {

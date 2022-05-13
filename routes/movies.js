@@ -1,3 +1,4 @@
+import firestore from '../lib/repository.js'
 /**
  * Sample route for some endpoint
  *
@@ -5,10 +6,10 @@
  * @param {object} res the response we return
  * @returns {object[]} list of movies
  */
-function getMovies(req, res) {
-  return [];
+async function getMovies(req, res) {
+  res.send(await firestore.getMovies());
 }
 
-module.exports = {
+export {
   getMovies
 };
