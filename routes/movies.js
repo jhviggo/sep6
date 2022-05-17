@@ -6,7 +6,7 @@
  * @returns {object[]} list of movies
  */
 function getMovies(req, res) {
-  return [];
+  res.send([{'id': 1234, 'data': 'I am now in the cloud'}])
 }
 
 module.exports = {
