@@ -1,3 +1,13 @@
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { initializeApp } from "firebase/app";
+import fs from 'fs'
+
+//TEMP location of firebase config file, needs to be changed!! 
+const rawData = fs.readFileSync('./firebase-config.json');
+const firebaseConfig = JSON.parse(rawData);
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
 //DUMMY DATA FOR RESPONSE:
 const response = {
     userName: 'bob',
@@ -28,14 +38,41 @@ async function getFavorites(req, res){
 async function userLogin(req, res){
     const userName = req.body.userName; 
     const password = req.body.password;
-    res.send(response);
+    const email = req.body.email; 
+    signInWithEmailAndPassword(auth, email, password)
+    .then((userCridential) => {
+        //Signed in
+        const user = userCridential.user;
+        res.send(user);
+    })
+    .catch((error) => {
+        const errorCode = error.code; 
+        const errorMessage = error.message; 
+        console.log("Error Code: ", errorCode);
+        console.log("Error Message: ", errorMessage);
+        res.send(errorMessage);
+      });
 }
 
 async function userSignup(req, res){
     const userName = req.body.userName;
     const password = req.body.password;
     const email = req.body.email;
-    res.send(response);
+
+    //Creating a user with email and password
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((userCridential) => {
+        //Signed in 
+        const user = userCridential.user; 
+        res.send(user);
+    })
+    .catch((error) => {
+        const errorCode = error.code; 
+        const errorMessage = error.message; 
+        console.log("Error Code: ", errorCode);
+        console.log("Error Message: ", errorMessage);
+        res.send(errorMessage);
+    })
 }
 
 async function addFavorite(req, res){
