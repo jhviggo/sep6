@@ -1,5 +1,6 @@
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { initializeApp } from "firebase/app";
+import { signUpUser, initializeDB } from '../lib/repository.js'
 
 let app;
 let auth;
@@ -17,6 +18,7 @@ function initialize() {
     }
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
+    initializeDB(app);
 }
 
 //DUMMY DATA FOR RESPONSE:
@@ -74,8 +76,12 @@ async function userSignup(req, res){
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCridential) => {
         //Signed in 
-        const user = userCridential.user; 
-        res.send(user);
+        signUpUser(userCridential.user, userName)
+        const response = {
+            accessToken: userCridential.user.accessToken,
+            expirationTime: userCridential.user.stsTokenManager.expirationTime
+        };
+        res.send(response);
     })
     .catch((error) => {
         const errorCode = error.code; 
