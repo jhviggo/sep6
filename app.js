@@ -2,9 +2,26 @@ import express from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
 import bodyParser from 'body-parser';
-import { getUser, getFavorites, userLogin, userSignup, addFavorite, initialize } from './routes/user.js';
+import { getUser, getFavorites, userLogin, userSignup, addFavorite, initializeUser } from './routes/user.js';
 import { getComments, addComment } from './routes/comments.js';
 import morgan from 'morgan';
+import {initializeApp} from 'firebase/app';
+
+//Instatiation of API componenets
+function initialize() {
+  const projectId = 'sep6-6733b';
+  const firebaseConfig = {
+      apiKey: process.env.API_KEY,
+      authDomain: `${projectId}.firebaseapp.com`,
+      projectId,
+      storageBucket: `${projectId}.appspot.com`,
+      messagingSenderId: "681323377586",
+      appId: process.env.APP_ID,
+      databaseURL: `https://${projectId}.eur3.firebasedatabase.app`,
+  }
+  const firebaseApp = initializeApp(firebaseConfig);
+  initializeUser(firebaseApp);
+}
 
 const app = express();
 const PORT = process.env.PORT || 8080;
