@@ -11,10 +11,9 @@ const PORT = process.env.PORT || 8080;
 //Middleware to pass json body types in request
 const jsonParser = bodyParser.json();
 //Morgan token for use and custom tokens
-morgan.token('body', (req) => JSON.stringify(req.body));
 morgan.token('id', (req) => req.params.id);
 morgan.token('movieId', (req) => req.params.movieId);
-app.use(morgan(':url :method :status :id :body :movieId'));
+app.use(morgan(' Url: :url \n Method: :method \n Status: :status \n ResponseTime: :response-time ms \n ID: :id \n MovieID: :movieId'));
 
 // Routes
 //User routes
