@@ -4,7 +4,7 @@ const response = {
 };
 
 async function getComments(req,res){
-    const id = req.params.moveId;
+    const id = req.params.movieId;
     const response = {
         movieId: id,
         userName: 'bob',
@@ -15,7 +15,7 @@ async function getComments(req,res){
 }
 
 async function addComment(req,res){
-    const id = req.params.moveId;
+    const id = req.params.movieId;
     const user = req.body.userId;
     const userText = req.body.text;
     const response = {
