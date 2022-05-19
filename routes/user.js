@@ -1,13 +1,24 @@
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { initializeApp } from "firebase/app";
-import fs from 'fs'
 
-//TEMP location of firebase config file, needs to be changed!! 
-const rawData = fs.readFileSync('./firebase-config.json');
-const firebaseConfig = JSON.parse(rawData);
+let app;
+let auth;
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth();
+function initialize() {
+    const projectId = 'sep6-6733b';
+    const firebaseConfig = {
+        apiKey: process.env.API_KEY,
+        authDomain: `${projectId}.firebaseapp.com`,
+        projectId,
+        storageBucket: `${projectId}.appspot.com`,
+        messagingSenderId: "681323377586",
+        appId: process.env.APP_ID,
+        databaseURL: `https://${projectId}.eur3.firebasedatabase.app`,
+    }
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+}
+
 //DUMMY DATA FOR RESPONSE:
 const response = {
     userName: 'bob',
@@ -86,6 +97,7 @@ async function addFavorite(req, res){
 }
 
 export{
+    initialize,
     getUser,
     getFavorites,
     userLogin,

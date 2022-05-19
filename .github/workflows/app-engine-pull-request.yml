@@ -20,6 +20,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Create Environment
+      run: "printf 'runtime: nodejs16\nenv_variables:\n  API_KEY: \"${{ secrets.API_KEY }}\"\n  APP_ID: \"${{ secrets.APP_ID }}\"' > app.yaml"
+
     - id: 'auth'
       uses: 'google-github-actions/auth@v0'
       with:
