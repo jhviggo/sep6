@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import { getUser, getFavorites, userLogin, userSignup, addFavorite, initialize } from './routes/user.js';
 import { getComments, addComment } from './routes/comments.js';
 import morgan from 'morgan';
+import cors from 'cors';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -14,6 +15,7 @@ const jsonParser = bodyParser.json();
 morgan.token('id', (req) => req.params.id);
 morgan.token('movieId', (req) => req.params.movieId);
 app.use(morgan(' Url: :url \n Method: :method \n Status: :status \n ResponseTime: :response-time ms \n ID: :id \n MovieID: :movieId'));
+app.use(cors());
 
 // Routes
 //User routes
