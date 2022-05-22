@@ -5,7 +5,8 @@ import bodyParser from 'body-parser';
 import { getUser, getFavorites, userLogin, userSignup, addFavorite, initializeUser } from './routes/user.js';
 import { getComments, addComment } from './routes/comments.js';
 import morgan from 'morgan';
-import {initializeApp} from 'firebase/app';
+import {initializeApp } from 'firebase/app';
+import { verifyIdToken } from './auth';
 
 //Instatiation of API componenets
 function initialize() {
@@ -23,6 +24,7 @@ function initialize() {
   initializeUser(firebaseApp);
 }
 
+initialize();
 const app = express();
 const PORT = process.env.PORT || 8080;
 //Middleware to pass json body types in request
