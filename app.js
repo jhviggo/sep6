@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import { getUser, getFavorites, userLogin, userSignup, addFavorite, initializeUser } from './routes/user.js';
 import { getComments, addComment } from './routes/comments.js';
 import morgan from 'morgan';
-import {initializeApp} from 'firebase/app';
+import { initializeApp } from 'firebase/app';
 
 //Instatiation of API componenets
 function initialize() {
