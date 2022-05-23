@@ -88,7 +88,6 @@ async function removeFavorite(req,res){
             uid: uid,
             movieId: movieId,
             imageUrl: imageUrl,
-            status: 'Removed'
         };
         res.send(response);
     }catch (error) {
