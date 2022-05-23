@@ -48,7 +48,7 @@ async function userLogin(req, res){
         res.send(response);
     } catch (error) {
         res.status(400)
-        res.send(error.Message);
+        res.send(error.message);
     }
 }
 
@@ -67,7 +67,7 @@ async function userSignup(req, res){
         res.send(response);
     } catch (error) {
         res.status(400);
-        res.send(error.Message);
+        res.send(error.message);
     }
 }
 
@@ -87,7 +87,7 @@ async function addFavorite(req, res){
         res.send(response);
     }catch (error) {
         res.status(400);
-        res.send(error.Message);
+        res.send(error.message);
     }
 }
 
