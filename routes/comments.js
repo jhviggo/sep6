@@ -1,29 +1,31 @@
-//DUMMY DATA FOR RESPONSE:
-const response = {
-
-};
+import { addUserComment, getMovieComments } from '../lib/repository.js';
 
 async function getComments(req,res){
-    const id = req.params.movieId;
-    const response = {
-        movieId: id,
-        userName: 'bob',
-        text: 'Bob liky',
-        timestamp: '18-05-2022'
-    };
-    res.send(response);
+    const movieId = req.params.movieId;
+    try{
+        const response = await getMovieComments(movieId);
+        res.send(response);
+    } catch (error) {
+        res.status(400);
+        res.send(error.message);
+    }
 }
 
 async function addComment(req,res){
-    const id = req.params.movieId;
-    const user = req.body.userId;
-    const userText = req.body.text;
-    const response = {
-        userId: user,
-        text: userText,
-        movieId: id
+    const comment = {
+        movieId: req.params.movieId,
+        uid: req.body.userId,
+        text: req.body.text,
+        userName: req.body.userName,
+        timestamp: new Date().toISOString(),
     };
-    res.send(response);
+    try{
+        const response = await addUserComment(comment);
+        res.send(response);
+    } catch (error) {
+        res.status(400);
+        res.send(error.message);
+    }
 }
 
 export{
