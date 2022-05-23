@@ -1,22 +1,8 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { initializeApp } from "firebase/app";
-import { signUpUser, initializeDB } from '../lib/repository.js'
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { signUpUser, addUserFavorite, initializeDB } from '../lib/repository.js'
 
-let app;
 let auth;
-
-function initialize() {
-    const projectId = 'sep6-6733b';
-    const firebaseConfig = {
-        apiKey: process.env.API_KEY,
-        authDomain: `${projectId}.firebaseapp.com`,
-        projectId,
-        storageBucket: `${projectId}.appspot.com`,
-        messagingSenderId: "681323377586",
-        appId: process.env.APP_ID,
-        databaseURL: `https://${projectId}.eur3.firebasedatabase.app`,
-    }
-    app = initializeApp(firebaseConfig);
+function initializeUser(app) {
     auth = getAuth(app);
     initializeDB(app);
 }
@@ -52,19 +38,18 @@ async function userLogin(req, res){
     const userName = req.body.userName; 
     const password = req.body.password;
     const email = req.body.email; 
-    signInWithEmailAndPassword(auth, email, password)
-    .then((userCridential) => {
-        //Signed in
-        const user = userCridential.user;
-        res.send(user);
-    })
-    .catch((error) => {
-        const errorCode = error.code; 
-        const errorMessage = error.message; 
-        console.log("Error Code: ", errorCode);
-        console.log("Error Message: ", errorMessage);
-        res.send(errorMessage);
-      });
+    try {
+        const firebaseRep = await signInWithEmailAndPassword(auth, email, password);
+        const response = {
+            uid: firebaseRep.user.uid,
+            accessToken: firebaseRep.user.accessToken,
+            expirationTime: firebaseRep.user.stsTokenManager.expirationTime
+        };
+        res.send(response);
+    } catch (error) {
+        res.status(400)
+        res.send(error.message);
+    }
 }
 
 async function userSignup(req, res){
@@ -72,38 +57,42 @@ async function userSignup(req, res){
     const password = req.body.password;
     const email = req.body.email;
 
-    //Creating a user with email and password
-    createUserWithEmailAndPassword(auth, email, password)
-    .then((userCridential) => {
-        //Signed in 
-        signUpUser(userCridential.user, userName)
+    try {
+        const firebaseRep = await createUserWithEmailAndPassword(auth, email, password);
         const response = {
-            accessToken: userCridential.user.accessToken,
-            expirationTime: userCridential.user.stsTokenManager.expirationTime
+            accessToken: firebaseRep.user.accessToken,
+            expirationTime: firebaseRep.user.stsTokenManager.expirationTime
         };
+        signUpUser(firebaseRep.user, userName)
         res.send(response);
-    })
-    .catch((error) => {
-        const errorCode = error.code; 
-        const errorMessage = error.message; 
-        console.log("Error Code: ", errorCode);
-        console.log("Error Message: ", errorMessage);
-        res.send(errorMessage);
-    })
+    } catch (error) {
+        res.status(400);
+        res.send(error.message);
+    }
 }
 
 async function addFavorite(req, res){
-    const favorites = req.body.favorites;
-    const userId = req.params.id;
-    const userFavorites = {
-        userId: userId,
-        favorites: favorites
+    const uid = req.params.id;
+    const movie = {
+        movieId: req.body.movieId,
+        imageUrl: req.body.imageUrl
     };
-    res.send(userFavorites);
+    try{
+        await addUserFavorite(uid,movie);
+        const response = {
+            uid: uid,
+            movieId: movie.movieId,
+            status: 'added'
+        };
+        res.send(response);
+    }catch (error) {
+        res.status(400);
+        res.send(error.message);
+    }
 }
 
 export{
-    initialize,
+    initializeUser,
     getUser,
     getFavorites,
     userLogin,
