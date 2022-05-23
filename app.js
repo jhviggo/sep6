@@ -2,14 +2,14 @@ import express from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
 import bodyParser from 'body-parser';
-import { getUser, getFavorites, userLogin, userSignup, addFavorite, removeFavorite, initializeUser } from './routes/user.js';
+import { getUser, getFavorites, userLogin, userSignup, addFavorite, removeFavorite, initializeUser, verifyUserMiddleware } from './routes/user.js';
 import { getComments, addComment } from './routes/comments.js';
 import morgan from 'morgan';
 import cors from 'cors';
 import { initializeApp } from 'firebase/app';
 
 //Instatiation of API components
-function initialize(){
+async function initialize(){
   const projectId = 'sep6-6733b';
   const firebaseConfig = {
       apiKey: process.env.API_KEY,
@@ -21,7 +21,7 @@ function initialize(){
       databaseURL: `https://${projectId}.eur3.firebasedatabase.app`,
   }
   const firebaseApp = initializeApp(firebaseConfig);
-  initializeUser(firebaseApp);
+  await initializeUser(firebaseApp);
 }
 
 const app = express();
@@ -36,18 +36,18 @@ app.use(cors());
 
 // Routes
 //User routes
-app.get('/user/:id',getUser);
-app.get('/user/:id/favorite',getFavorites);
-app.post('/login',jsonParser,userLogin);
-app.post('/signup',jsonParser,userSignup);
-app.post('/user/:id/favorite',jsonParser,addFavorite);
-app.delete('/user/:id/favorite',jsonParser,removeFavorite);
+app.get('/user/:id', verifyUserMiddleware, getUser);
+app.get('/user/:id/favorite', verifyUserMiddleware, getFavorites);
+app.post('/login', jsonParser, userLogin);
+app.post('/signup', jsonParser, userSignup);
+app.post('/user/:id/favorite', jsonParser, verifyUserMiddleware, addFavorite);
+app.delete('/user/:id/favorite', jsonParser, verifyUserMiddleware, removeFavorite);
 //Comment routes
-app.get('/comments/:movieId',getComments);
-app.post('/comments/:movieId',jsonParser,addComment);
+app.get('/comments/:movieId', getComments);
+app.post('/comments/:movieId', jsonParser, verifyUserMiddleware, addComment);
 
 //Instatiate 
-initialize();
+await initialize();
 
 // Listen
 app.listen(PORT, () => {

@@ -1,19 +1,47 @@
+import jwt from 'jsonwebtoken';
+import axios from 'axios';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { signUpUser, addUserFavorite, removeUserFavorite, getUserFavorites, getUserInformation, initializeDB } from '../lib/repository.js'
 
+const ISS = 'https://securetoken.google.com/sep6-6733b';
+
 let auth;
-function initializeUser(app) {
+let firestorePublicKeys;
+
+async function initializeUser(app) {
     auth = getAuth(app);
     initializeDB(app);
+    const response = await axios.get('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com');
+    firestorePublicKeys = response.data;
 }
 
-//DUMMY DATA FOR RESPONSE:
-const response = {
-    userName: 'bob',
-    password: 'bob',
-    email: 'bob@gmail.com'
+function verifyIdToken(idToken) {
+    const header64 = idToken.split('.')[0];
+    const header = JSON.parse(Buffer.from(header64, 'base64').toString('ascii'));
+    return jwt.verify(idToken, firestorePublicKeys[header.kid], { algorithms: ['RS256'] });
 };
 
+async function verifyUserMiddleware(req, res, next) {
+    const uid = req.params.id || req.body?.userId;
+    let token;
+    try {
+        token = verifyIdToken(req.headers.authorization.split(' ')[1]);
+    } catch (tokenError) {
+        res.status(401).send('Unauthorized');
+        return;
+    }
+
+    if (token.sub !== uid) {
+        res.status(401).send('Unauthorized');
+        return;
+    }
+
+    if (token.iss !== ISS) {
+        res.status(401).send('Unauthorized');
+        return;
+    }
+    next();
+}
 
 async function getUser(req, res){
     const userId = req.params.id;
@@ -119,5 +147,6 @@ export{
     userLogin,
     userSignup,
     addFavorite,
-    removeFavorite
+    removeFavorite,
+    verifyUserMiddleware,
 };
