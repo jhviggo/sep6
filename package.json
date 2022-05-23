@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon ./app.js",
-    "test": "mocha --reporter spec"
+    "test": "eslint ./**.js"
   },
   "author": "",
   "license": "ISC",
