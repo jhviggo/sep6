@@ -1,5 +1,5 @@
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { signUpUser, addUserFavorite, initializeDB } from '../lib/repository.js'
+import { signUpUser, addUserFavorite, getUserFavorites, initializeDB } from '../lib/repository.js'
 
 let auth;
 function initializeUser(app) {
@@ -19,19 +19,6 @@ async function getUser(req, res){
     const userId = req.params.id;
     response.userName = userId;
     res.send(response);
-}
-
-async function getFavorites(req, res){
-    const userId = req.params.id;
-    const favorites = [
-        1234,
-        5345
-      ]
-    const userFavorites = {
-        userId: userId,
-        favorites: favorites
-    };
-    res.send(userFavorites);
 }
 
 async function userLogin(req, res){
@@ -85,6 +72,17 @@ async function addFavorite(req, res){
             status: 'added'
         };
         res.send(response);
+    }catch (error) {
+        res.status(400);
+        res.send(error.message);
+    }
+}
+
+async function getFavorites(req, res){
+    const uid = req.params.id;
+    try{
+        const data = await getUserFavorites(uid);
+        res.send(data);
     }catch (error) {
         res.status(400);
         res.send(error.message);
