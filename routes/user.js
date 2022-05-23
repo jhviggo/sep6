@@ -80,13 +80,14 @@ async function addFavorite(req, res){
 
 async function removeFavorite(req,res){
     const uid = req.params.id;
-    const movieId = req.params.movieId;
+    const movieId = req.body.movieId;
     const imageUrl = req.body.imageUrl;
     try{
         await removeUserFavorite(uid,movieId,imageUrl);
         const response = {
             uid: uid,
             movieId: movieId,
+            imageUrl: imageUrl,
             status: 'Removed'
         };
         res.send(response);

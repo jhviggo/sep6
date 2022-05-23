@@ -41,7 +41,7 @@ app.get('/user/:id/favorite',getFavorites);
 app.post('/login',jsonParser,userLogin);
 app.post('/signup',jsonParser,userSignup);
 app.post('/user/:id/favorite',jsonParser,addFavorite);
-app.post('/user/:id/favorite/:movieId',jsonParser,removeFavorite);
+app.delete('/user/:id/favorite',jsonParser,removeFavorite);
 //Comment routes
 app.get('/comments/:movieId',getComments);
 app.post('/comments/:movieId',jsonParser,addComment);
