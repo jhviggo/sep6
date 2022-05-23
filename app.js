@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
 import bodyParser from 'body-parser';
-import { getUser, getFavorites, userLogin, userSignup, addFavorite, initializeUser } from './routes/user.js';
+import { getUser, getFavorites, userLogin, userSignup, addFavorite, removeFavorite, initializeUser } from './routes/user.js';
 import { getComments, addComment } from './routes/comments.js';
 import morgan from 'morgan';
 import cors from 'cors';
@@ -41,6 +41,7 @@ app.get('/user/:id/favorite',getFavorites);
 app.post('/login',jsonParser,userLogin);
 app.post('/signup',jsonParser,userSignup);
 app.post('/user/:id/favorite',jsonParser,addFavorite);
+app.delete('/user/:id/favorite',jsonParser,removeFavorite);
 //Comment routes
 app.get('/comments/:movieId',getComments);
 app.post('/comments/:movieId',jsonParser,addComment);

@@ -1,5 +1,5 @@
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { signUpUser, addUserFavorite, getUserFavorites, initializeDB } from '../lib/repository.js'
+import { signUpUser, addUserFavorite, removeUserFavorite, getUserFavorites, initializeDB } from '../lib/repository.js'
 
 let auth;
 function initializeUser(app) {
@@ -78,6 +78,24 @@ async function addFavorite(req, res){
     }
 }
 
+async function removeFavorite(req,res){
+    const uid = req.params.id;
+    const movieId = req.body.movieId;
+    const imageUrl = req.body.imageUrl;
+    try{
+        await removeUserFavorite(uid,movieId,imageUrl);
+        const response = {
+            uid: uid,
+            movieId: movieId,
+            imageUrl: imageUrl,
+        };
+        res.send(response);
+    }catch (error) {
+        res.status(400);
+        res.send(error.message);
+    }
+}
+
 async function getFavorites(req, res){
     const uid = req.params.id;
     try{
@@ -95,5 +113,6 @@ export{
     getFavorites,
     userLogin,
     userSignup,
-    addFavorite
+    addFavorite,
+    removeFavorite
 };
