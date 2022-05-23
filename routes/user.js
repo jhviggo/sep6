@@ -78,7 +78,7 @@ async function addFavorite(req, res){
         imageUrl: req.body.imageUrl
     };
     try{
-        addUserFavorite(uid,movie);
+        await addUserFavorite(uid,movie);
         const response = {
             uid: uid,
             movieId: movie.movieId,
