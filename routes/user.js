@@ -1,5 +1,5 @@
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { signUpUser, addUserFavorite, removeUserFavorite, getUserFavorites, initializeDB } from '../lib/repository.js'
+import { signUpUser, addUserFavorite, removeUserFavorite, getUserFavorites, getUserInformation, initializeDB } from '../lib/repository.js'
 
 let auth;
 function initializeUser(app) {
@@ -17,8 +17,13 @@ const response = {
 
 async function getUser(req, res){
     const userId = req.params.id;
-    response.userName = userId;
-    res.send(response);
+    try{
+        const userToReturn = await getUserInformation(userId);
+        res.send(userToReturn);
+    } catch (error) {
+        res.status(400)
+        res.send(error.message);
+    }
 }
 
 async function userLogin(req, res){
