@@ -27,17 +27,17 @@ async function verifyUserMiddleware(req, res, next) {
     try {
         token = verifyIdToken(req.headers.authorization.split(' ')[1]);
     } catch (tokenError) {
-        res.status(401).send('Unauthorized');
+        res.status(401).send('Invalid token');
         return;
     }
 
     if (token.sub !== uid) {
-        res.status(401).send('Unauthorized');
+        res.status(401).send('Invalid uid');
         return;
     }
 
     if (token.iss !== ISS) {
-        res.status(401).send('Unauthorized');
+        res.status(401).send('Invalid issuer');
         return;
     }
     next();
@@ -55,7 +55,6 @@ async function getUser(req, res){
 }
 
 async function userLogin(req, res){
-    const userName = req.body.userName; 
     const password = req.body.password;
     const email = req.body.email; 
     try {
@@ -80,6 +79,7 @@ async function userSignup(req, res){
     try {
         const firebaseRep = await createUserWithEmailAndPassword(auth, email, password);
         const response = {
+            uid: firebaseRep.user.uid,
             accessToken: firebaseRep.user.accessToken,
             expirationTime: firebaseRep.user.stsTokenManager.expirationTime
         };
@@ -95,14 +95,14 @@ async function addFavorite(req, res){
     const uid = req.params.id;
     const movie = {
         movieId: req.body.movieId,
-        imageUrl: req.body.imageUrl
+        imageUrl: req.body.imageUrl,
+        title: req.body.title
     };
     try{
         await addUserFavorite(uid,movie);
         const response = {
             uid: uid,
-            movieId: movie.movieId,
-            status: 'added'
+            movieId: movie.movieId
         };
         res.send(response);
     }catch (error) {
@@ -115,8 +115,9 @@ async function removeFavorite(req,res){
     const uid = req.params.id;
     const movieId = req.body.movieId;
     const imageUrl = req.body.imageUrl;
+    const title = req.body.title;
     try{
-        await removeUserFavorite(uid,movieId,imageUrl);
+        await removeUserFavorite(uid,movieId,imageUrl, title);
         const response = {
             uid: uid,
             movieId: movieId,
