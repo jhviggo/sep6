@@ -1,4 +1,4 @@
-import { addUserComment, getMovieComments } from '../lib/repository.js';
+const { addUserComment, getMovieComments } = require('../lib/repository.js');
 
 async function getComments(req,res){
     const movieId = req.params.movieId;
@@ -28,7 +28,7 @@ async function addComment(req,res){
     }
 }
 
-export{
+module.exports = {
     getComments,
     addComment
 };
