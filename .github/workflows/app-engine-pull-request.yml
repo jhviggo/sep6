@@ -20,6 +20,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Unit test
+      run: npm ci && npm test
+
     - name: Create Environment
       run: "printf 'runtime: nodejs16\nenv_variables:\n  API_KEY: \"${{ secrets.API_KEY }}\"\n  APP_ID: \"${{ secrets.APP_ID }}\"' > app.yaml"
 
