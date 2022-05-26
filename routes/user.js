@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken';
-import axios from 'axios';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { signUpUser, addUserFavorite, removeUserFavorite, getUserFavorites, getUserInformation, initializeDB } from '../lib/repository.js'
+const jwt = require('jsonwebtoken');
+const axios = require('axios');
+const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } = require("firebase/auth");
+const { signUpUser, addUserFavorite, removeUserFavorite, getUserFavorites, getUserInformation, initializeDB } = require('../lib/repository.js');
 
 const ISS = 'https://securetoken.google.com/sep6-6733b';
 
@@ -141,7 +141,7 @@ async function getFavorites(req, res){
     }
 }
 
-export{
+module.exports = {
     initializeUser,
     getUser,
     getFavorites,

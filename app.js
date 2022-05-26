@@ -1,12 +1,12 @@
-import express from 'express';
-import dotenv from 'dotenv';
+const express = require('express');
+const dotenv = require('dotenv');
 dotenv.config();
-import bodyParser from 'body-parser';
-import { getUser, getFavorites, userLogin, userSignup, addFavorite, removeFavorite, initializeUser, verifyUserMiddleware } from './routes/user.js';
-import { getComments, addComment } from './routes/comments.js';
-import morgan from 'morgan';
-import cors from 'cors';
-import { initializeApp } from 'firebase/app';
+const bodyParser = require('body-parser');
+const { getUser, getFavorites, userLogin, userSignup, addFavorite, removeFavorite, initializeUser, verifyUserMiddleware } = require('./routes/user.js');
+const { getComments, addComment } = require('./routes/comments.js');
+const morgan = require('morgan');
+const cors = require('cors');
+const { initializeApp } = require('firebase/app');
 
 //Instatiation of API components
 async function initialize(){
@@ -47,9 +47,9 @@ app.get('/comments/:movieId', getComments);
 app.post('/comments/:movieId', jsonParser, verifyUserMiddleware, addComment);
 
 //Instatiate 
-await initialize();
-
-// Listen
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+initialize().then(() => {
+  // Listen
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });
