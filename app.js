@@ -45,7 +45,7 @@ app.delete('/user/:id/favorite', jsonParser, verifyUserMiddleware, removeFavorit
 //Comment routes
 app.get('/comments/:movieId', getComments);
 app.post('/comments/:movieId', jsonParser, verifyUserMiddleware, addComment);
-app.post('/comments/:movieId/:commentId', jsonParser, verifyUserMiddleware, removeComment);
+app.delete('/comments/:movieId/:commentId', jsonParser, verifyUserMiddleware, removeComment);
 
 //Instatiate 
 initialize().then(() => {
