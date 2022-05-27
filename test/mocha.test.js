@@ -148,24 +148,4 @@ describe('User Route API', () => {
         await userMock.userSignup(req,res);
         sinon.assert.calledWith(signUpUserMock, undefined, 'email', 123);
     });
-
-    /**
-     * Post: Signup User
-     */
-
-    /**
-     * Post: Login User 
-     */
-
-    /**
-     * Get: Favorites from User 
-     */
-
-    /**
-     * Post: Add Favorite from user
-     */
-
-    /**
-     * Del: Remove Favorite from user 
-     */
 });

@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const bodyParser = require('body-parser');
 const { getUser, getFavorites, userLogin, userSignup, addFavorite, removeFavorite, initializeUser, verifyUserMiddleware } = require('./routes/user.js');
-const { getComments, addComment } = require('./routes/comments.js');
+const { getComments, addComment, removeComment } = require('./routes/comments.js');
 const morgan = require('morgan');
 const cors = require('cors');
 const { initializeApp } = require('firebase/app');
@@ -45,6 +45,7 @@ app.delete('/user/:id/favorite', jsonParser, verifyUserMiddleware, removeFavorit
 //Comment routes
 app.get('/comments/:movieId', getComments);
 app.post('/comments/:movieId', jsonParser, verifyUserMiddleware, addComment);
+app.delete('/comments/:movieId/:commentId', jsonParser, verifyUserMiddleware, removeComment);
 
 //Instatiate 
 initialize().then(() => {

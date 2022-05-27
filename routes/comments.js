@@ -1,4 +1,4 @@
-const { addUserComment, getMovieComments } = require('../lib/repository.js');
+const { addUserComment, getMovieComments, removeUserComment } = require('../lib/repository.js');
 
 async function getComments(req,res){
     const movieId = req.params.movieId;
@@ -28,7 +28,20 @@ async function addComment(req,res){
     }
 }
 
+async function removeComment(req, res){
+    const movieId = req.params.movieId;
+    const commentId = req.params.commentId;
+    try{
+        const response = await removeUserComment(movieId, commentId);
+        res.send(response);
+    } catch (error) {
+        res.status(400);
+        res.send(error.message);
+    }
+}
+
 module.exports = {
     getComments,
-    addComment
+    addComment,
+    removeComment
 };
