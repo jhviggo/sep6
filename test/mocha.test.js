@@ -149,3 +149,79 @@ describe('User Route API', () => {
         sinon.assert.calledWith(signUpUserMock, undefined, 'email', 123);
     });
 });
+
+describe('Comments Route API', () => {
+    let addUserCommentMock;
+    let removeUserCommentMock;
+    let getMovieCommentsMock;
+
+    beforeEach(() => {
+        addUserCommentMock = sinon.stub();
+        removeUserCommentMock = sinon.stub();
+        getMovieCommentsMock = sinon.stub().returns('list');
+        mock('../lib/repository.js', {
+            'getMovieComments' : getMovieCommentsMock,
+            'addUserComment' : addUserCommentMock,
+            'removeUserComment' : removeUserCommentMock
+        });
+    });
+
+    it("Should Get list of commments by given MovieId", async () => {
+        const commentMock = mock.reRequire('../routes/comments.js');
+        const req = {
+            params: {
+                movieId: 123
+            }
+        };
+        const res = {
+            status: () => {},
+            send: sinon.stub()
+        };
+        await commentMock.getComments(req,res);
+        sinon.assert.calledWith(getMovieCommentsMock, 123);
+        sinon.assert.calledWith(res.send,'list');
+    })
+
+    it("Should add commment to a given movie by MovieId", async () => {
+        const commentMock = mock.reRequire('../routes/comments.js');
+        const req = {
+            params: {
+                movieId: 123
+            },
+            body: {
+                uid: 123,
+                text: 'hello',
+                userName: 'bob'
+            }
+        };
+        const res = {
+            status: () => {},
+            send: sinon.stub()
+        };
+        const comment = {
+            movieId: req.params.movieId,
+            uid: req.body.userId,
+            text: req.body.text,
+            userName: req.body.userName,
+            timestamp: new Date().toISOString(),
+        };
+        await commentMock.addComment(req,res);
+        sinon.assert.calledWith(addUserCommentMock,comment);
+    });
+
+    it("Should remove a comment to a given movie by MovieId", async () => {
+        const commentMock = mock.reRequire('../routes/comments.js');
+        const req = {
+            params: {
+                movieId: 123,
+                commentId: 123
+            }
+        };
+        const res = {
+            status: () => {},
+            send: sinon.stub()
+        };
+        await commentMock.removeComment(req,res);
+        sinon.assert.calledWith(removeUserCommentMock,123,123);
+    })
+})
