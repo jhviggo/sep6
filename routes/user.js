@@ -11,6 +11,7 @@ let firestorePublicKeys;
 async function initializeUser(app) {
     auth = getAuth(app);
     initializeDB(app);
+    
     const response = await axios.get('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com');
     firestorePublicKeys = response.data;
 }
